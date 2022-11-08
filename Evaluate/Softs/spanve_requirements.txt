@@ -1,0 +1,9 @@
+matplotlib
+numpy
+scanpy
+scipy>=1.8
+joblib
+scikit-learn
+statsmodels
+tqdm
+click
