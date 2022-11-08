@@ -5,7 +5,7 @@
 - Install by pip:
 
 ```bash
-pip install spanve
+pip install Spanve
 ```
 
 - no install usage:
