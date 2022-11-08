@@ -169,9 +169,23 @@ class Spanve(object):
         verbose:bool=False,
         **kwargs
     ) -> None:
+        """spanve model.
+
+        :param adata: AnnData object
+        :type adata: AnnData
+        :param spatial_info: spatial_infomation,default to adata.obsm['spatial'], defaults to None
+        :type spatial_info: str;np.ndarray;pd.DataFrame, optional
+        :param neighbor_finder: neighbor finder,could be 'knn' or 'Delaunay', defaults to None
+        :type neighbor_finder: str, optional
+        :param hypoth_type: distribution hypoth,could be 'nodist' or 'possion', defaults to "nodist"
+        :type hypoth_type: str, optional
+        :param n_jobs: number of paralle workers, defaults to -1
+        :type n_jobs: int, optional
+        :param verbose: verbose, defaults to False
+        :type verbose: bool, optional
+        """
         super().__init__()
         self.adata = adata
-        self.__input_check(verbose=verbose)
         self.K = max(K if K is not None else self.adata.shape[0]//100,5)
         self.n_jobs = n_jobs
         self.hypoth_type = hypoth_type
@@ -204,13 +218,15 @@ class Spanve(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+        self.__input_check(verbose=verbose)
+
     def __input_check(self,verbose=False):
         if not hasattr(self.adata, "X"):
             raise ValueError("adata.X is not defined")
-        if not hasattr(self.adata, "obsm"):
-            raise ValueError("adata.obsm is not defined")
-        if "spatial" not in self.adata.obsm:
-            raise ValueError("adata.obsm['spatial'] is not defined")
+        
+        assert self.neighbor_finder in ["knn","Delaunay"], f"neighbor_finder should be 'knn' or 'Delaunay', now get {self.neighbor_finder}"
+        assert self.hypoth_type in ["nodist","possion"], f"hypoth_type should be 'nodist' or 'possion', now get {self.hypoth_type}"
+        assert self.X.shape[0] == self.L.shape[0], f"expression data is not consistent with spatial data, now get {self.X.shape[0]} != {self.L.shape[0]}"
 
         if self.adata.X.dtype not in [np.int64, np.int32, np.int16, np.int8, np.int0]:
             warnings.warn("""
@@ -481,7 +497,6 @@ class Spanve(object):
 
         self.overall_dist,self.overall_max = self.nodist_hypoth(self.X, verbose=verbose)
         self.nbr_indices = self.finding_spatial_neibors(self.K)
-
 
     def load_dict(self,attr,verbose=True):
 
