@@ -58,4 +58,4 @@ X_ = spanve.impute_from_graph(X[:,spanve.rejects])
 
 #### Details
 
-see [tutorial notebook](tutorial.ipynb)
+see [tutorial notebook](tutorial.ipynb) or [html page](http://htmlpreview.github.io/?https://github.com/gx-Cai/Spanve/blob/main/tutorial.html).
