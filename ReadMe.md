@@ -1,8 +1,8 @@
-# Spanve: An ultra fast tools for detecting Spatial dependent Genes.
+# Spanve: An ultra fast tool for detecting Spatial dependent Expressed Genes.
 
 ## Installation
 
-- Install by pip:
+- Install by pip (recommend):
 
 ```bash
 pip install Spanve
