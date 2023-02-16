@@ -231,6 +231,24 @@ class Spanve(object):
             Will automatically convert to int. Inputs can be Raw Counts or use `adata_preprocess_int` to get a normalized data with int dtype. """
             )
 
+    def spatial_coexp(self,search_space):
+        def spatial_coexp_single(x,y):
+            sample_corr = (x - x.mean()) * (y - y.mean()) / (x.std() * y.std()+1e-7)
+            return sample_corr.astype(int)
+
+        adata = self.adata.copy()
+
+        newdf = pd.DataFrame(
+            index=adata.obs_names,
+            columns=[f"{x}~{y}" for x,y in search_space]
+        )
+        for var1,var2 in search_space:
+            newdf[f"{var1}~{var2}"] = spatial_coexp_single(adata.obs_vector(var1),adata.obs_vector(var2))
+        
+        newad = sc.AnnData(newdf,obsm={'spatial':adata.obsm['spatial']},dtype=int)
+        self.adata = newad
+        self.X = newad.X
+
     def possion_hypoth(self, X, verbose=False):
         overall_max = X.max(axis=0)
         n_features = X.shape[1]
