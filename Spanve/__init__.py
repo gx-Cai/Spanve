@@ -291,7 +291,7 @@ class Spanve(object):
 
         return Rs
 
-    def fit(self, verbose=None):
+    def fit(self, verbose=None, force_reject = False):
         # count time
         start = time.time()
         if verbose is None:
@@ -340,7 +340,7 @@ class Spanve(object):
         for k, v in gtest_result.items():
             setattr(self, k, v)
         
-        if self.rejects.sum() < 1:
+        if self.rejects.sum() < 1 and force_reject:
             warnings.warn(
             """
             WARNNING: little significant features found.
@@ -446,6 +446,7 @@ class Spanve(object):
             )
         ax.set_xticks([])
         ax.set_yticks([])
+        ax.set_aspect('equal')
         # set color bar
         plt.colorbar(
             mappable= ax.collections[0],
