@@ -228,7 +228,7 @@ class Spanve(object):
             warnings.warn("""
             WARNNING: X must be an int matrix; 
             ----------------------------------------
-            Will automatically convert to int. Inputs can be Raw Counts or use `adata_preprocess_int` to get a normalized data with int dtype. """
+            Will NOT automatically convert to int. Inputs can be Raw Counts or use `adata_preprocess_int` to get a normalized data with int dtype. """
             )
 
     def spatial_coexp(self,search_space):
