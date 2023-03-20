@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'matplotlib',
-        'numpy<=1.21',
+        'numpy',
         'scanpy',
         'scipy>=1.8',
         'joblib',
