@@ -116,7 +116,8 @@ def adata_preprocess_int(anndata,eps = 1e-7,exclude_highly_expressed=True,copy=T
         exclude_highly_expressed=exclude_highly_expressed,
         )
     sc.pp.log1p(adata)
-    adata.X = ((adata.X / (eps+np.median(adata.X,axis=0))) * np.median(anndata.X,axis=0)).astype(int)
+    expr_median = eps+np.median(adata.X,axis=0)
+    adata.X = ((adata.X / expr_median) * expr_median).astype(int)
 
     return adata
 
@@ -231,21 +232,43 @@ class Spanve(object):
             Will NOT automatically convert to int. Inputs can be Raw Counts or use `adata_preprocess_int` to get a normalized data with int dtype. """
             )
 
-    def spatial_coexp(self,search_space):
+    def spatial_coexp(self,search_space,groupby=None,verbose=False):
+        
         def spatial_coexp_single(x,y):
             sample_corr = (x - x.mean()) * (y - y.mean()) / (x.std() * y.std()+1e-7)
             return sample_corr.astype(int)
-
-        adata = self.adata.copy()
-
-        newdf = pd.DataFrame(
-            index=adata.obs_names,
-            columns=[f"{x}~{y}" for x,y in search_space]
-        )
-        for var1,var2 in search_space:
-            newdf[f"{var1}~{var2}"] = spatial_coexp_single(adata.obs_vector(var1),adata.obs_vector(var2))
         
-        newad = sc.AnnData(newdf,obsm={'spatial':adata.obsm['spatial']},dtype=int)
+        def spatial_coexp_group(adata):
+            newdf = pd.DataFrame(
+                spatial_coexp_single(adata[:,list(var1)].X.toarray(),adata[:,list(var2)].X.toarray()),
+                index = adata.obs_names,
+                columns = [f"{i}~{j}" for i,j in search_space]
+            )
+
+            newad = sc.AnnData(newdf,obsm={'spatial':adata.obsm['spatial']},dtype=int)
+            return newad
+        
+        adata = self.adata.copy()
+        var1,var2 = zip(*search_space)
+        
+        if groupby is not None:
+            assert groupby in adata.obs.columns, "groupby should be obs columns and should be categories." 
+            groups = adata.obs_vector(groupby)
+            n_groups = np.unique(groups).size
+            newads = []
+            
+            bar = tqdm(total=n_groups,disable=not verbose, desc = f'There are {n_groups} groups. Will cal coexp strength separately.') 
+            for g in np.unique(groups):
+                adata_ = adata[groups==g,:]
+                newad_ = spatial_coexp_group(adata_)
+                newads.append(newad_)
+                bar.update(1)
+            newad = sc.concat(newads)
+            bar.close()
+        else:
+            newad = spatial_coexp_group(adata)
+        
+        sc.pp.filter_genes(newad,min_counts=1)
         self.adata = newad
         self.X = newad.X
 
