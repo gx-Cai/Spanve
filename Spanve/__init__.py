@@ -9,7 +9,7 @@ import pandas as pd
 import scanpy as sc
 import scipy
 from joblib import Parallel, delayed
-
+from scipy.sparse import issparse
 try:
     from scipy.sparse import csr_array
 except ImportError:
@@ -182,6 +182,10 @@ class Spanve(object):
         :type verbose: bool, optional
         """
         super().__init__()
+        n_genes = adata.shape[1]
+        sc.pp.filter_genes(adata,min_counts=1)
+        if adata.shape[1] < n_genes:
+            print(f'Filter genes with min_counts=1, {n_genes-adata.shape[1]} genes removed.')
         self.adata = adata
         self.K = max(K if K is not None else self.adata.shape[0]//100,5)
         self.n_jobs = n_jobs
@@ -197,6 +201,8 @@ class Spanve(object):
             self.neighbor_finder = neighbor_finder
 
         X = adata.X.astype(int)
+        if issparse(X):
+            X = X.toarray()
         if spatial_info is None:
             assert 'spatial' in adata.obsm.keys(), "'spatial' is not in obsm keys, try set param `spatial_info`" 
             L = adata.obsm["spatial"]
@@ -306,7 +312,7 @@ class Spanve(object):
     def finding_spatial_neibors(self, K,finder=None):
         finder = self.neighbor_finder if finder is None else finder
         nbr = NearestNeighbors(n_neighbors=K)
-        nbr.fit(self.adata.obsm['spatial'])
+        nbr.fit(self.L)
         if finder =='knn':
             graph = nbr.kneighbors_graph()
             diag_mask = ~np.eye(*graph.shape).astype(bool)
