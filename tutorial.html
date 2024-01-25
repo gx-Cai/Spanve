@@ -17851,7 +17851,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Step-1.-Inputs-data">Step 1. Inputs data<a class="anchor-link" href="#Step-1.-Inputs-data">&#182;</a></h1><p><strong>Inputs Format</strong></p>
-<p>Spanve model receive a <code>anndata.AnnData</code> object as input, and the <code>anndata.AnnData.obsm</code> key named <code>'spatail'</code> is required. Otherwise, specify the <code>spatial_info</code> parameter, which can be <code>str</code> of obsm key or <code>np.ndarray</code> and <code>pd.DataFrame</code> of spatial information.</p>
+<p>Spanve model receive a <code>anndata.AnnData</code> object as input, and the <code>anndata.AnnData.obsm</code> key named <code>'spatial'</code> is required. Otherwise, specify the <code>spatial_info</code> parameter, which can be <code>str</code> of obsm key or <code>np.ndarray</code> and <code>pd.DataFrame</code> of spatial information.</p>
 <p><strong>Preprocessing</strong></p>
 <p>(Optional but recommended in most cases)</p>
 <p>Note that: The preprocessing method is making the median of each gene keep the same with raw counts data. So, the preprocessing method is not suitable for data with negative values.</p>

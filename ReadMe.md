@@ -38,7 +38,7 @@ Options:
   -p, --preprocessed BOOLEAN  int preprocessed or not.
   --help                      Show this message and exit.****
 ```
-command line usage can only run in a standard h5ad file, where there is a `anndata.AnnData.obsm` key named `'spatail'`.
+command line usage can only run in a standard h5ad file, where there is a `anndata.AnnData.obsm` key named `'spatial'`.
 
 ### python usage
 
