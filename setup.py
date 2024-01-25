@@ -22,6 +22,8 @@ setup(
         'console_scripts': [
             'Spanve = Spanve.Spanve_cli:main'
         ]
-    }
+    },
+    long_description=open('ReadMe.md').read(),
+    long_description_content_type='text/markdown',
 )
 

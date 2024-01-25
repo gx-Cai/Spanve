@@ -275,6 +275,8 @@ class Spanve(object):
             newad = spatial_coexp_group(adata)
         
         sc.pp.filter_genes(newad,min_counts=1)
+        # show the number of genes pair filtered
+        print("Delete gene pair with pseduo counts < 1:",newad.shape[1]-self.adata.shape[1],"pairs", "\nRemaining:",self.adata.shape[1],"pairs")
         self.adata = newad
         self.X = newad.X
 
