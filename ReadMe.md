@@ -1,4 +1,19 @@
-# Spanve: An ultra fast tool for detecting Spatial dependent Expressed Genes.
+# Spanve: A Statistical Method for Detecting Downstream-friendly Spatially Variable Genes in Large-scale Spatial Transcriptomics Data
+
+## Citation
+```
+@preprint{b.23.SpanveStatistical,
+  title = {Spanve: An {{Statistical Method}} to {{Detect Clustering-friendly Spatially Variable Genes}} in {{Large-scale Spatial Transcriptomics Data}}},
+  author = {{Guoxin Cai} and {Yichang Chen} and {Shuqing Chen} and {Xun Gu} and {Zhan Zhou}},
+  date = {2023-01-01},
+  journaltitle = {bioRxiv},
+  pages = {2023.02.08.527623},
+  doi = {10.1101/2023.02.08.527623},
+  url = {http://biorxiv.org/content/early/2023/03/08/2023.02.08.527623.abstract},
+}
+```
+
+Analysis code for the paper is available at `Evaluate` directory.
 
 ## Installation
 
@@ -58,4 +73,4 @@ X_ = spanve.impute_from_graph(X[:,spanve.rejects])
 
 #### Details
 
-see [tutorial notebook](tutorial.ipynb) or [html page](http://htmlpreview.github.io/?https://github.com/gx-Cai/Spanve/blob/main/tutorial.html).
+see [tutorial notebook](tutorial.ipynb) or [html page](https://github.com/gx-Cai/Spanve/wiki/Tutorial).
