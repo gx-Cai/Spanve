@@ -8,7 +8,7 @@ The data used in this study includes the following:
 - DLPFC datasets downloaded by the [script](./Data/fetch_libd.R) based on BayesSpace. And converted to the format of `h5ad` by the `sceasy` package.
 - Simulations generated from [our simulation pipeline](../data_Simulation_generate.ipynb).
 
-NOTE: The data used in this study is not included in this repository. Please download the data from the above sources and place them in the corresponding folders.
+NOTE: The data used in this study is not included in this repository. Please download the data from the above sources and place them in the corresponding folders. And see the details in our manuscript supplementary materials (Table S2).
 
 
 ## Build the conda environment
@@ -31,15 +31,5 @@ devtools::install_github("Shufeyangyi2015310117/SC.MEB",lib=lib_loc)
 ```
 
 ## Run the evaluation pipeline [SE genes]
-
-```bash
-# activate the conda environment
-conda activate SpaBench
-cd Bench
-# run the evaluation pipeline
-# modify the python script to change the parameters
-python run_bench.py
-```
-## Run the evaluation pipeline [Imputation cluster]
 
 see jupyter notebooks under this folder.
