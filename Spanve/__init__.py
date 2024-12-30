@@ -403,9 +403,10 @@ class Spanve(object):
         return overall_dist, overall_max
 
     def ent2gtest(self, Ents, ddof=0):
-
-        df = self.overall_max
-        pvals = chi2.sf(2 * len(self.adata) * Ents, df - ddof)
+        n_obs = len(self.adata)
+        # avoid the case of 0
+        df = np.array([(np.array(list(d.values()))>1/n_obs).sum()-1 for d in self.overall_dist])
+        pvals = chi2.sf(2 * n_obs * Ents, df - ddof)
         pvals[np.isnan(pvals)] = 1
         rejects, fdrs, _1, _2 = multipletests(pvals, method="fdr_bh")
         return {"pvals": pvals, "rejects": rejects, "fdrs": fdrs}
