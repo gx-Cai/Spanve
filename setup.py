@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='Spanve',
-    version='0.1.4',
+    version='0.1.5',
     description='Spatial Neighborhood Variably Expressed Genes (Spanve) is a method for detecting spatial variably expressed genes in spatial transcriptomics data.',
     url='https://github.com/gx-Cai/Spanve',
     author='gx.Cai',
