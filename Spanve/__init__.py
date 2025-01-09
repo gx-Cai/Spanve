@@ -56,7 +56,7 @@ class Spanve(object):
         self, adata,
         spatial_info=None,
         layer = None,
-        neighbor_finder=None, # 'knn' or 'Delaunay'
+        neighbor_finder=None,
         K: int = None, 
         hypoth_type: str = "nodist",        
         n_jobs: int = -1, 
@@ -67,7 +67,7 @@ class Spanve(object):
 
         Args:
             adata (AnnData): AnnData object.
-            K (int, optional): Number of K neighbors. Defaults to None, which means using `adata.shape[0]//100` or 5.
+            K (int, optional): Number of K neighbors. Defaults to None, which means using `adata.shape[0]//100` or 5. With larger K, the Spanve is more specific while low sensitivity, and vice versa.
             spatial_info (, optional): Information of spatial location. If a `str` type, it should be in `obsm` keys. If is a `pd.DataFrame` or `np.ndarray`, it should have a length of number of samples. Defaults to None ("spatial").
             layer (str, optional): used adata layers to computated. Defaults to None (`adata.X`).
             neighbor_finder (str, optional): spatial graph construction method, one of ['knn','Delaunay']. Defaults to None ('knn').
@@ -84,7 +84,14 @@ class Spanve(object):
         if adata.shape[1] < n_genes:
             print(f'Filter genes with min_counts=1, {n_genes-adata.shape[1]} genes removed.')
         self.adata = adata
-        self.K = max(K if K is not None else self.adata.shape[0]//100,5)
+        if K is None and neighbor_finder == 'knn':
+            warnings.warn(
+                "WARNNING: K is not defined, will use `adata.shape[0]//100` as K."
+                "\n----------------------------------------"
+                "\n`K` is an important parameter of Spanve model, refer to the number of neibors when building KNN network. With larger K, the Spanve is more specific while low sensitivity, and vice versa."
+                "you can set `K` to a proper value based on the number of cells and the number of spatial variably genes."
+            )
+        self.K = min(max(K if K is not None else self.adata.shape[0]//100, 5), 100)
         self.n_jobs = n_jobs
         self.hypoth_type = hypoth_type
         self.verbose = verbose
@@ -93,6 +100,12 @@ class Spanve(object):
             if self.adata.shape[0] < 10000:
                 self.neighbor_finder = "knn"
             else:
+                warnings.warn(
+                    "WARNNING: The number of cells is large, will use `Delaunay` as neighbor_finder."
+                    "\n----------------------------------------"
+                    "\n`Delaunay` is a spatial graph construction method, which is more suitable for large number of cells."
+                    "you can set `neighbor_finder` to `knn` or `Delaunay` based on the number of cells."
+                )
                 self.neighbor_finder = "Delaunay"
         else:
             self.neighbor_finder = neighbor_finder
@@ -425,10 +438,10 @@ class Spanve(object):
             return self.nbr_indices
 
         finder = self.neighbor_finder if finder is None else finder
-        nbr = NearestNeighbors(n_neighbors=K)
-        nbr.fit(self.L)
 
         if finder =='knn':
+            nbr = NearestNeighbors(n_neighbors=K)
+            nbr.fit(self.L)
             graph = nbr.kneighbors_graph()
             diag_mask = ~np.eye(*graph.shape).astype(bool)
             nbr_indices = np.where((graph == 1).todense() & diag_mask)
@@ -510,7 +523,7 @@ class Spanve(object):
         if verbose:
             print("#2 Nearest Neighbors Found")
 
-        Rs = self._AbsSubstract(X,indices,verbose)
+        Rs = self._AbsSubstract(X, indices, verbose)
 
         def computed_G(i):
             ind, counts = Rs[i]
