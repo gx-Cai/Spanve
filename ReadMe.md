@@ -23,6 +23,17 @@ Analysis code for the paper is available at `Evaluate` directory.
 pip install Spanve
 ```
 
+- Install by source
+
+if there are some problems with the pip installation, you can install it from source code.
+
+```bash
+git clone https://github.com/gx-Cai/Spanve.git # or download the zip file and unzip
+cd Spanve
+pip install -e .  # install in editable mode
+```
+
+
 - no install usage:
 
 ```bash
@@ -74,3 +85,14 @@ X_ = spanve.impute_from_graph(X[:,spanve.rejects])
 #### Details
 
 see [tutorial notebook](tutorial.ipynb) or [html page](https://github.com/gx-Cai/Spanve/wiki/Tutorial).
+
+
+## Known Issues
+
+- When numpy version is 1.24 or higher, you may enrounter the following error:
+
+```
+AttributeError: module 'numpy' has no attribute 'int0'
+```
+
+solution: downgrade numpy, or **install by source code**. \[will fix in future release\]

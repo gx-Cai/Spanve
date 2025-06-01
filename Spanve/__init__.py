@@ -144,7 +144,7 @@ class Spanve(object):
         assert self.hypoth_type in ["nodist","possion"], f"hypoth_type should be 'nodist' or 'possion', now get {self.hypoth_type}"
         assert self.X.shape[0] == self.L.shape[0], f"expression data is not consistent with spatial data, now get {self.X.shape[0]} != {self.L.shape[0]}"
 
-        if self.adata.X.dtype not in [np.int64, np.int32, np.int16, np.int8, np.int0]:
+        if self.adata.X.dtype not in [np.int64, np.int32, np.int16, np.int8]:
             warnings.warn("""
             WARNNING: X must be an int matrix; 
             ----------------------------------------
